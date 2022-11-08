@@ -80,7 +80,6 @@ function itemToggle(): void {
     var itemDiv = <HTMLElement>this;
     let index = itemDiv.getAttribute("data-index");
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
-
     displayToDoItems();
 }
 
@@ -92,28 +91,17 @@ function displayToDoItems(): void {
     allToDoItemList.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
     //completeItemList.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
 
-    //separateItems(allToDoItemList);
-    let s:string;
-
     for (let index in allToDoItemList) {
         if (!allToDoItemList[index].isComplete) {
-            s = "incomplete";
+            displayItem("incomplete", allToDoItemList, index);
         }
-        else if (allToDoItemList[index].isComplete) {
-            s = "complete";
-        }
-        displayItem(s, allToDoItemList, index);
     }
 
-    /*
-    for (let index in incompleteItemList) {
-        displayItem("incomplete", incompleteItemList, index);
+    for (let index in allToDoItemList) {
+        if (allToDoItemList[index].isComplete) {
+            displayItem("complete", allToDoItemList, index);
+        }
     }
-
-    for (let index in completeItemList) {
-        displayItem("complete", completeItemList, index);
-    }
-    */
 }
 
 function separateItems(list: ToDoItem[]): void {

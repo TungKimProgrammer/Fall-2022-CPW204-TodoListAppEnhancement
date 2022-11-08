@@ -94,15 +94,15 @@ h1 {
 
 [class*="todo-complete-"] {
     background-color: rgb(40, 110, 216);
-    margin-top: 0.1em;
-    margin-bottom: 0.1em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
     opacity: 50%;
 }
 
 [class*="todo-incomplete-"] {
     background-color: lightcoral;
-    margin-top: 0.1em;
-    margin-bottom: 0.1em;
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
 }
 
 [class*="todo-"] h3, p {

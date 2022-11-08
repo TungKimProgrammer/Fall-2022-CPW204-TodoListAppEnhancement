@@ -49,15 +49,15 @@ function itemToggle() {
 function displayToDoItems() {
     getByID("display-div").innerHTML = "";
     allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
-    var s;
     for (var index in allToDoItemList) {
         if (!allToDoItemList[index].isComplete) {
-            s = "incomplete";
+            displayItem("incomplete", allToDoItemList, index);
         }
-        else if (allToDoItemList[index].isComplete) {
-            s = "complete";
+    }
+    for (var index in allToDoItemList) {
+        if (allToDoItemList[index].isComplete) {
+            displayItem("complete", allToDoItemList, index);
         }
-        displayItem(s, allToDoItemList, index);
     }
 }
 function separateItems(list) {
