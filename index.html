@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List App - Enhancement</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="https://unpkg.com/js-datepicker/dist/datepicker.min.css">
+</head>
+
+<body>
+    <h1>ToDo List Enhancement</h1>
+    <form id="todoForm" action="" class="container">
+        <fieldset id="add-item" class="add-item-fieldset">
+            <legend>
+                Add Todo Item
+            </legend>
+
+            <div class="div-label-input">
+                <table>
+                    <tr>
+                        <td><label for="title">Title</label></td>
+                        <td><input type="text" id="title"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span id="title-err-msg"></span></td>
+                    </tr>
+                    <tr>
+                        <td><label for="due-date">Due Date</label></td>
+                        <td><input type="text" id="due-date"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><span id="due-date-err-msg"></span></td>
+                    </tr>
+                    <tr>
+                        <td><label for="is-complete">Is complete?</label></td>
+                        <td><input type="checkbox" id="is-complete"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="error-div"></div>
+            <div class="div-button">
+                <!--<input type="button" value="Add Todo Item"> -->
+                <button id="addButton" class="button" type="button" value="Add Todo Item">Add Todo Item</button>
+                <button id="updateButton" class="button" type="button" value="Update ToDoItems">Update ToDo Lists</button>
+                <button id="clearButton" class="button" type="button" value="Clear ToDoItems">Clear ToDo Lists</button>
+            </div>
+        </fieldset>
+
+        <fieldset id="display-fieldset" class="display-fieldset">
+            <legend>ToDo Item Lists</legend>
+            <div id="display-div">
+                
+            </div>
+        </fieldset>
+
+    </form>
+    <script src="https://unpkg.com/js-datepicker"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

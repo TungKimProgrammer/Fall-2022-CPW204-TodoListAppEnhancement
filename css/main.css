@@ -1,0 +1,119 @@
+* {
+    font-family: "Segoe Script", cursive;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 95%;
+    max-width: 800px;
+
+}
+
+.add-item-fieldset,
+.display-fieldset {
+    box-sizing: border-box;
+    width: 49.5%;
+    float: left;
+    padding: 10px;
+    overflow: auto;
+    min-width: 350px;
+    min-height: 500px;
+}
+
+table {
+
+}
+
+#title-err-msg,
+#due-date-err-msg {
+    color: red;
+    font-size: 14px;
+    height: 13px;;
+}
+
+fieldset>legend {
+    font-size: 1.5em;
+}
+
+form label {
+    display: inline-block;
+    margin-right: 1em;
+    width: 110px;
+    text-align: right;
+}
+
+input[type="text"] {
+    height: 25px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    width: 200px;
+    border-radius: 5px;
+}
+
+input[type="checkbox"] {
+    transform: scale(2);
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+    padding-left: 5px;
+}
+
+.div-button {
+    text-align: center;
+}
+
+form button {
+    margin-top: 2em;
+    margin-bottom: 1em;
+    width: 150px;
+    background-color: rgb(147, 241, 147);
+    color: purple;
+    border: 1px solid black;
+    cursor: pointer;
+    padding: 0.75em;
+    border-radius: 0.3em;
+    box-shadow: 7px 6px 28px 1px rgba(0, 0, 0, 0.24);
+}
+
+form button:hover {
+    background-color: orange;
+}
+
+form button:active {
+    color: white;
+    background-color: red;
+    transform: scale(0.9);
+    /* Scaling button to 0.98 to its original size */
+    box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+    /* Lowering the shadow */
+}
+
+h1 {
+    text-align: center;
+}
+
+[class*="todo-complete-"] {
+    background-color: rgb(40, 110, 216);
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+    opacity: 50%;
+}
+
+[class*="todo-incomplete-"] {
+    background-color: lightcoral;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+}
+
+[class*="todo-"] h3, p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+[class*="todo-"] {
+    border-radius: 1em;
+    box-sizing: border-box;
+    cursor: pointer;
+}
