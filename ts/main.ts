@@ -72,10 +72,6 @@ function itemToggle(): void {
     displayToDoItems();
 }
 
-function processModal(id: string, s: string) {
-
-}
-
 // display list of ToDoItem
 function displayToDoItems(): void {
     getByID("display-div").innerHTML = "";
@@ -106,6 +102,7 @@ function displayToDoItems(): void {
 function displayItem(s: string, list: ToDoItem[], index: string) {
     let displayDiv = getByID("display-div");
 
+    // create div to display each item
     let itemDiv = document.createElement("DIV");
     itemDiv.ondblclick = itemToggle;
     itemDiv.setAttribute("id", "todo-" + s + "-" + index);
@@ -124,18 +121,17 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     let itemDueDate = document.createElement("p");
     itemDueDate.innerText = list[index].dueDate.toDateString();
 
-
-    let itemZoomIn = document.createElement("SPAN");
-    itemZoomIn.classList.add("zoom");
-    itemZoomIn.onclick = function () { modal.style.display = "block"; }
-    itemZoomIn.innerText = "ZOOM";
+    let itemDetails = document.createElement("SPAN");
+    itemDetails.classList.add("details");
+    itemDetails.onclick = function () { modal.style.display = "block"; }
+    itemDetails.innerText = "Details";
 
     displayDiv.appendChild(itemDiv);
     itemDiv.appendChild(itemTitle);
     itemDiv.appendChild(itemDueDate);
-    itemDiv.appendChild(itemZoomIn);
+    itemDiv.appendChild(itemDetails);
 
-    // create Modal display
+    // create Pop-up Modal display
     let modalDiv = document.createElement("DIV");
     modalDiv.classList.add("modal");
     modalDiv.setAttribute("id", "modal-" + s + "-" + index);
@@ -144,9 +140,6 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     modalContentDiv.classList.add("modal-content-" + s);
     displayDiv.appendChild(modalDiv);
     modalDiv.appendChild(modalContentDiv);
-
-    // Get the modal
-    var modal = document.getElementById("modal-" + s + "-" + index);
 
     let modalContentSpanX = document.createElement("SPAN");
     modalContentSpanX.classList.add("close");
@@ -165,13 +158,12 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     modalContentDiv.appendChild(modalStatus);
 
     // Get the modal
-    var modal = document.getElementById("modal-" + s + "-" + index);
+    var modal = getByID("modal-" + s + "-" + index);
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     }
-
 }
 
 /**

@@ -36,8 +36,6 @@ function itemToggle() {
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems();
 }
-function processModal(id, s) {
-}
 function displayToDoItems() {
     getByID("display-div").innerHTML = "";
     allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
@@ -72,14 +70,14 @@ function displayItem(s, list, index) {
     itemTitle.innerText = list[index].title;
     var itemDueDate = document.createElement("p");
     itemDueDate.innerText = list[index].dueDate.toDateString();
-    var itemZoomIn = document.createElement("SPAN");
-    itemZoomIn.classList.add("zoom");
-    itemZoomIn.onclick = function () { modal.style.display = "block"; };
-    itemZoomIn.innerText = "ZOOM";
+    var itemDetails = document.createElement("SPAN");
+    itemDetails.classList.add("details");
+    itemDetails.onclick = function () { modal.style.display = "block"; };
+    itemDetails.innerText = "Details";
     displayDiv.appendChild(itemDiv);
     itemDiv.appendChild(itemTitle);
     itemDiv.appendChild(itemDueDate);
-    itemDiv.appendChild(itemZoomIn);
+    itemDiv.appendChild(itemDetails);
     var modalDiv = document.createElement("DIV");
     modalDiv.classList.add("modal");
     modalDiv.setAttribute("id", "modal-" + s + "-" + index);
@@ -87,7 +85,6 @@ function displayItem(s, list, index) {
     modalContentDiv.classList.add("modal-content-" + s);
     displayDiv.appendChild(modalDiv);
     modalDiv.appendChild(modalContentDiv);
-    var modal = document.getElementById("modal-" + s + "-" + index);
     var modalContentSpanX = document.createElement("SPAN");
     modalContentSpanX.classList.add("close");
     modalContentSpanX.innerText = "X";
@@ -101,7 +98,7 @@ function displayItem(s, list, index) {
     modalContentDiv.appendChild(modalTitle);
     modalContentDiv.appendChild(modalDueDate);
     modalContentDiv.appendChild(modalStatus);
-    var modal = document.getElementById("modal-" + s + "-" + index);
+    var modal = getByID("modal-" + s + "-" + index);
     window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
