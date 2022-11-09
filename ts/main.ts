@@ -23,10 +23,7 @@ class ToDoItem {
 }
 
 var allToDoItemList: ToDoItem[] = [];
-var completeItemList: ToDoItem[] = [];
-var incompleteItemList: ToDoItem[] = [];
-var completeLegendCount = 0;
-var incompleteLegendCount = 0;
+
 
 window.onload = function () {
     let addBtn = <HTMLElement>getByID("addButton");
@@ -75,7 +72,7 @@ function itemToggle(): void {
     displayToDoItems();
 }
 
-function processModal(id: string, s: string){
+function processModal(id: string, s: string) {
 
 }
 
@@ -121,16 +118,16 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     if (list[index].isComplete) {
         itemTitle.setAttribute("style", "text-decoration: line-through;");
         status += "COMPLETE";
-    } else {status += "INCOMPLETE";}
+    } else { status += "INCOMPLETE"; }
     itemTitle.innerText = list[index].title;
 
     let itemDueDate = document.createElement("p");
     itemDueDate.innerText = list[index].dueDate.toDateString();
-    
-    
+
+
     let itemZoomIn = document.createElement("SPAN");
     itemZoomIn.classList.add("zoom");
-    itemZoomIn.onclick = function() {modal.style.display = "block";}
+    itemZoomIn.onclick = function () { modal.style.display = "block"; }
     itemZoomIn.innerText = "ZOOM";
 
     displayDiv.appendChild(itemDiv);
@@ -154,7 +151,7 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     let modalContentSpanX = document.createElement("SPAN");
     modalContentSpanX.classList.add("close");
     modalContentSpanX.innerText = "X";
-    modalContentSpanX.onclick = function() {modal.style.display = "none";}
+    modalContentSpanX.onclick = function () { modal.style.display = "none"; }
     modalContentDiv.appendChild(modalContentSpanX);
 
     // clone h3 and p from itemDiv
@@ -169,11 +166,11 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
 
     // Get the modal
     var modal = document.getElementById("modal-" + s + "-" + index);
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
-          modal.style.display = "none";
+            modal.style.display = "none";
         }
-      }
+    }
 
 }
 

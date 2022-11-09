@@ -13,10 +13,6 @@ var ToDoItem = (function () {
     return ToDoItem;
 }());
 var allToDoItemList = [];
-var completeItemList = [];
-var incompleteItemList = [];
-var completeLegendCount = 0;
-var incompleteLegendCount = 0;
 window.onload = function () {
     var addBtn = getByID("addButton");
     var updateBtn = getByID("updateButton");
