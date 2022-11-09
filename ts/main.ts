@@ -65,25 +65,21 @@ function setCookies(cTitle, cDueDate, cIsComplete): void {
 
 }
 
-function clearLists(): void {
-    allToDoItemList = [];
-    displayToDoItems();
-    clearErrMsg();
-    (<HTMLFormElement>getByID("todoForm")).reset();
-}
-
-// Allows user to mark a ToDoItem as complete or incomplete
-// moves complete and non-complete item between two lists
+// Allows user to double click on each item
+// to toggle the status between complete and incomplete
+// display updated item list
 function itemToggle(): void {
-
-    //mixedItemList = [];
     var itemDiv = <HTMLElement>this;
     let index = itemDiv.getAttribute("data-index");
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems();
 }
 
-// display list of added ToDoItem
+function processModal(id: string, s: string){
+
+}
+
+// display list of ToDoItem
 function displayToDoItems(): void {
     getByID("display-div").innerHTML = "";
 
@@ -104,25 +100,6 @@ function displayToDoItems(): void {
     }
 }
 
-function separateItems(list: ToDoItem[]): void {
-    // sort ToDoItems list by due date, most recent due date on top
-    list.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
-    //completeItemList.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
-
-    completeItemList = [];
-    incompleteItemList = [];
-
-    // separate complete and incomplete items to two lists
-    for (let i = 0; i < list.length; i++) {
-        if (list[i].isComplete) {
-            completeItemList.push(list[i]);
-        }
-        else {
-            incompleteItemList.push(list[i]);
-        }
-    }
-}
-
 /**
  * 
  * @param s "complete" or "incomplete"
@@ -139,18 +116,64 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     itemDiv.setAttribute("data-status", s);
     itemDiv.classList.add("todo-" + s + "-" + index);
 
+    let status = "";
     let itemTitle = document.createElement("h3");
     if (list[index].isComplete) {
         itemTitle.setAttribute("style", "text-decoration: line-through;");
-    }
+        status += "COMPLETE";
+    } else {status += "INCOMPLETE";}
     itemTitle.innerText = list[index].title;
 
     let itemDueDate = document.createElement("p");
     itemDueDate.innerText = list[index].dueDate.toDateString();
+    
+    
+    let itemZoomIn = document.createElement("SPAN");
+    itemZoomIn.classList.add("zoom");
+    itemZoomIn.onclick = function() {modal.style.display = "block";}
+    itemZoomIn.innerText = "ZOOM";
 
     displayDiv.appendChild(itemDiv);
     itemDiv.appendChild(itemTitle);
     itemDiv.appendChild(itemDueDate);
+    itemDiv.appendChild(itemZoomIn);
+
+    // create Modal display
+    let modalDiv = document.createElement("DIV");
+    modalDiv.classList.add("modal");
+    modalDiv.setAttribute("id", "modal-" + s + "-" + index);
+
+    let modalContentDiv = document.createElement("DIV");
+    modalContentDiv.classList.add("modal-content-" + s);
+    displayDiv.appendChild(modalDiv);
+    modalDiv.appendChild(modalContentDiv);
+
+    // Get the modal
+    var modal = document.getElementById("modal-" + s + "-" + index);
+
+    let modalContentSpanX = document.createElement("SPAN");
+    modalContentSpanX.classList.add("close");
+    modalContentSpanX.innerText = "X";
+    modalContentSpanX.onclick = function() {modal.style.display = "none";}
+    modalContentDiv.appendChild(modalContentSpanX);
+
+    // clone h3 and p from itemDiv
+    let modalTitle = itemTitle.cloneNode(true);
+    let modalDueDate = itemDueDate.cloneNode(true);
+    let modalStatus = document.createElement("SPAN");
+    modalStatus.classList.add("status");
+    modalStatus.innerText = status;
+    modalContentDiv.appendChild(modalTitle);
+    modalContentDiv.appendChild(modalDueDate);
+    modalContentDiv.appendChild(modalStatus);
+
+    // Get the modal
+    var modal = document.getElementById("modal-" + s + "-" + index);
+    window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
 
 }
 
@@ -184,6 +207,14 @@ function addToDoItem(): void {
         allToDoItemList.push(item);
         (<HTMLFormElement>getByID("todoForm")).reset();
     }
+}
+
+// clear ToDoItems
+function clearLists(): void {
+    allToDoItemList = [];
+    displayToDoItems();
+    clearErrMsg();
+    (<HTMLFormElement>getByID("todoForm")).reset();
 }
 
 /**

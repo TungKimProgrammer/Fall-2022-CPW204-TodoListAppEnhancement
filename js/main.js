@@ -34,17 +34,13 @@ function main() {
 }
 function setCookies(cTitle, cDueDate, cIsComplete) {
 }
-function clearLists() {
-    allToDoItemList = [];
-    displayToDoItems();
-    clearErrMsg();
-    getByID("todoForm").reset();
-}
 function itemToggle() {
     var itemDiv = this;
     var index = itemDiv.getAttribute("data-index");
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems();
+}
+function processModal(id, s) {
 }
 function displayToDoItems() {
     getByID("display-div").innerHTML = "";
@@ -60,19 +56,6 @@ function displayToDoItems() {
         }
     }
 }
-function separateItems(list) {
-    list.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
-    completeItemList = [];
-    incompleteItemList = [];
-    for (var i = 0; i < list.length; i++) {
-        if (list[i].isComplete) {
-            completeItemList.push(list[i]);
-        }
-        else {
-            incompleteItemList.push(list[i]);
-        }
-    }
-}
 function displayItem(s, list, index) {
     var displayDiv = getByID("display-div");
     var itemDiv = document.createElement("DIV");
@@ -81,16 +64,53 @@ function displayItem(s, list, index) {
     itemDiv.setAttribute("data-index", index);
     itemDiv.setAttribute("data-status", s);
     itemDiv.classList.add("todo-" + s + "-" + index);
+    var status = "";
     var itemTitle = document.createElement("h3");
     if (list[index].isComplete) {
         itemTitle.setAttribute("style", "text-decoration: line-through;");
+        status += "COMPLETE";
+    }
+    else {
+        status += "INCOMPLETE";
     }
     itemTitle.innerText = list[index].title;
     var itemDueDate = document.createElement("p");
     itemDueDate.innerText = list[index].dueDate.toDateString();
+    var itemZoomIn = document.createElement("SPAN");
+    itemZoomIn.classList.add("zoom");
+    itemZoomIn.onclick = function () { modal.style.display = "block"; };
+    itemZoomIn.innerText = "ZOOM";
     displayDiv.appendChild(itemDiv);
     itemDiv.appendChild(itemTitle);
     itemDiv.appendChild(itemDueDate);
+    itemDiv.appendChild(itemZoomIn);
+    var modalDiv = document.createElement("DIV");
+    modalDiv.classList.add("modal");
+    modalDiv.setAttribute("id", "modal-" + s + "-" + index);
+    var modalContentDiv = document.createElement("DIV");
+    modalContentDiv.classList.add("modal-content-" + s);
+    displayDiv.appendChild(modalDiv);
+    modalDiv.appendChild(modalContentDiv);
+    var modal = document.getElementById("modal-" + s + "-" + index);
+    var modalContentSpanX = document.createElement("SPAN");
+    modalContentSpanX.classList.add("close");
+    modalContentSpanX.innerText = "X";
+    modalContentSpanX.onclick = function () { modal.style.display = "none"; };
+    modalContentDiv.appendChild(modalContentSpanX);
+    var modalTitle = itemTitle.cloneNode(true);
+    var modalDueDate = itemDueDate.cloneNode(true);
+    var modalStatus = document.createElement("SPAN");
+    modalStatus.classList.add("status");
+    modalStatus.innerText = status;
+    modalContentDiv.appendChild(modalTitle);
+    modalContentDiv.appendChild(modalDueDate);
+    modalContentDiv.appendChild(modalStatus);
+    var modal = document.getElementById("modal-" + s + "-" + index);
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    };
 }
 function getToDoItem() {
     var title = getInputValueByID("title").trim();
@@ -109,6 +129,12 @@ function addToDoItem() {
         allToDoItemList.push(item);
         getByID("todoForm").reset();
     }
+}
+function clearLists() {
+    allToDoItemList = [];
+    displayToDoItems();
+    clearErrMsg();
+    getByID("todoForm").reset();
 }
 function isValid() {
     addInputEventToClearErrMsg();
