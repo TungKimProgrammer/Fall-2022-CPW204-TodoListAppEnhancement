@@ -27,13 +27,11 @@ var allToDoItemList: ToDoItem[] = [];
 
 window.onload = function () {
     let addBtn = <HTMLElement>getByID("addButton");
-    let updateBtn = <HTMLElement>getByID("updateButton");
     let clearBtn = <HTMLElement>getByID("clearButton");
     //addBtn.onclick = addToDoItem;
 
     addBtn.addEventListener("click", clearErrMsg);
     addBtn.addEventListener("click", main);
-    updateBtn.addEventListener("click", itemToggle);
     clearBtn.addEventListener("click", clearLists);
 
     //let grabChkBoxes = document.querySelectorAll("input[name=checkbox]");
@@ -43,6 +41,8 @@ window.onload = function () {
     // form reset and err msg cleared when 'ESC' key pressed
     specialKeyEventListener("title");
     specialKeyEventListener("due-date");
+
+    loadSavedTodoItemList();
 
     /* 
         addBtn.onclick = () => {
@@ -54,12 +54,31 @@ window.onload = function () {
 
 function main(): void {
     addToDoItem();
-    displayToDoItems();
+    displayToDoItems(allToDoItemList);
+}
+
+function loadSavedTodoItemList() {
+    getLocalStorage();
+    displayToDoItems(allToDoItemList);
 }
 
 // Stores ToDoItems in cookies or web storage
-function setCookies(cTitle, cDueDate, cIsComplete): void {
+function setLocalStorage(list: ToDoItem[]): void {
+    for (let index in allToDoItemList) {
+        // put the JSON string version of item in localStorage
+        let itemString = JSON.stringify(list[index]);
+        localStorage.setItem(index, itemString);
+    }
+    
+}
 
+function getLocalStorage() {
+    allToDoItemList = [];
+    for (let index in localStorage) {
+        // put the JSON string version of item in localStorage
+        let itemResult = localStorage.getItem(index);
+        allToDoItemList.push(JSON.parse(itemResult));
+    }
 }
 
 // Allows user to double click on each item
@@ -69,28 +88,30 @@ function itemToggle(): void {
     var itemDiv = <HTMLElement>this;
     let index = itemDiv.getAttribute("data-index");
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
-    displayToDoItems();
+    displayToDoItems(allToDoItemList);
 }
 
 // display list of ToDoItem
-function displayToDoItems(): void {
+function displayToDoItems(list: ToDoItem[]): void {
     getByID("display-div").innerHTML = "";
 
     // sort ToDoItems list by due date, most recent due date on top
-    allToDoItemList.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
+    list.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
     //completeItemList.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
 
-    for (let index in allToDoItemList) {
-        if (!allToDoItemList[index].isComplete) {
-            displayItem("incomplete", allToDoItemList, index);
+    for (let index in list) {
+        if (!list[index].isComplete) {
+            displayItem("incomplete", list, index);
         }
     }
 
-    for (let index in allToDoItemList) {
-        if (allToDoItemList[index].isComplete) {
-            displayItem("complete", allToDoItemList, index);
+    for (let index in list) {
+        if (list[index].isComplete) {
+            displayItem("complete", list, index);
         }
     }
+
+    
 }
 
 /**
@@ -196,12 +217,18 @@ function addToDoItem(): void {
         allToDoItemList.push(item);
         (<HTMLFormElement>getByID("todoForm")).reset();
     }
+
+    // clear localStorage and set update list
+    localStorage.clear();
+    setLocalStorage(allToDoItemList);
+    
 }
 
 // clear ToDoItems
 function clearLists(): void {
     allToDoItemList = [];
-    displayToDoItems();
+    localStorage.clear();
+    displayToDoItems(allToDoItemList);
     clearErrMsg();
     (<HTMLFormElement>getByID("todoForm")).reset();
 }

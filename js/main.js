@@ -15,38 +15,52 @@ var ToDoItem = (function () {
 var allToDoItemList = [];
 window.onload = function () {
     var addBtn = getByID("addButton");
-    var updateBtn = getByID("updateButton");
     var clearBtn = getByID("clearButton");
     addBtn.addEventListener("click", clearErrMsg);
     addBtn.addEventListener("click", main);
-    updateBtn.addEventListener("click", itemToggle);
     clearBtn.addEventListener("click", clearLists);
     specialKeyEventListener("title");
     specialKeyEventListener("due-date");
+    loadSavedTodoItemList();
 };
 function main() {
     addToDoItem();
-    displayToDoItems();
+    displayToDoItems(allToDoItemList);
 }
-function setCookies(cTitle, cDueDate, cIsComplete) {
+function loadSavedTodoItemList() {
+    getLocalStorage();
+    displayToDoItems(allToDoItemList);
+}
+function setLocalStorage(list) {
+    for (var index in allToDoItemList) {
+        var itemString = JSON.stringify(list[index]);
+        localStorage.setItem(index, itemString);
+    }
+}
+function getLocalStorage() {
+    allToDoItemList = [];
+    for (var index in localStorage) {
+        var itemResult = localStorage.getItem(index);
+        allToDoItemList.push(JSON.parse(itemResult));
+    }
 }
 function itemToggle() {
     var itemDiv = this;
     var index = itemDiv.getAttribute("data-index");
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
-    displayToDoItems();
+    displayToDoItems(allToDoItemList);
 }
-function displayToDoItems() {
+function displayToDoItems(list) {
     getByID("display-div").innerHTML = "";
-    allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
-    for (var index in allToDoItemList) {
-        if (!allToDoItemList[index].isComplete) {
-            displayItem("incomplete", allToDoItemList, index);
+    list.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
+    for (var index in list) {
+        if (!list[index].isComplete) {
+            displayItem("incomplete", list, index);
         }
     }
-    for (var index in allToDoItemList) {
-        if (allToDoItemList[index].isComplete) {
-            displayItem("complete", allToDoItemList, index);
+    for (var index in list) {
+        if (list[index].isComplete) {
+            displayItem("complete", list, index);
         }
     }
 }
@@ -122,10 +136,13 @@ function addToDoItem() {
         allToDoItemList.push(item);
         getByID("todoForm").reset();
     }
+    localStorage.clear();
+    setLocalStorage(allToDoItemList);
 }
 function clearLists() {
     allToDoItemList = [];
-    displayToDoItems();
+    localStorage.clear();
+    displayToDoItems(allToDoItemList);
     clearErrMsg();
     getByID("todoForm").reset();
 }

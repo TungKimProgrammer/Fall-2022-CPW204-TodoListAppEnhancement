@@ -21,8 +21,6 @@
     min-height: 500px;
 }
 
-table {}
-
 #title-err-msg,
 #due-date-err-msg {
     color: red;
@@ -63,8 +61,8 @@ input[type="checkbox"] {
 
 form button {
     margin-top: 2em;
-    margin-bottom: 1em;
-    width: 150px;
+    margin-bottom: 2em;
+    width: 180px;
     background-color: rgb(147, 241, 147);
     color: purple;
     border: 1px solid black;
