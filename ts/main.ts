@@ -27,11 +27,13 @@ var allToDoItemList: ToDoItem[] = [];
 
 window.onload = function () {
     let addBtn = <HTMLElement>getByID("addButton");
+    let retrieveBtn = <HTMLElement>getByID("retrieveButton");
     let clearBtn = <HTMLElement>getByID("clearButton");
     //addBtn.onclick = addToDoItem;
 
     addBtn.addEventListener("click", clearErrMsg);
     addBtn.addEventListener("click", main);
+    // retrieveBtn.addEventListener("click", loadSavedTodoItemList);
     clearBtn.addEventListener("click", clearLists);
 
     //let grabChkBoxes = document.querySelectorAll("input[name=checkbox]");
@@ -64,20 +66,20 @@ function loadSavedTodoItemList() {
 
 // Stores ToDoItems in cookies or web storage
 function setLocalStorage(list: ToDoItem[]): void {
-    for (let index in allToDoItemList) {
+    for (let index in list) {
         // put the JSON string version of item in localStorage
         let itemString = JSON.stringify(list[index]);
         localStorage.setItem(index, itemString);
     }
-    
 }
 
 function getLocalStorage() {
     allToDoItemList = [];
     for (let index in localStorage) {
         // put the JSON string version of item in localStorage
-        let itemResult = localStorage.getItem(index);
-        allToDoItemList.push(JSON.parse(itemResult));
+        let itemFromLocalStorage = localStorage.getItem(index);
+        let itemToRetrieve: ToDoItem = JSON.parse(itemFromLocalStorage);
+        allToDoItemList.push(itemToRetrieve);
     }
 }
 
@@ -87,18 +89,24 @@ function getLocalStorage() {
 function itemToggle(): void {
     var itemDiv = <HTMLElement>this;
     let index = itemDiv.getAttribute("data-index");
+
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems(allToDoItemList);
+    
+    // clear and update localStorage after toggling
+    localStorage.clear();
+    setLocalStorage(allToDoItemList);
+    // delete null values added to array caused by JSON
+    allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
 }
 
 // display list of ToDoItem
 function displayToDoItems(list: ToDoItem[]): void {
     getByID("display-div").innerHTML = "";
 
-    // sort ToDoItems list by due date, most recent due date on top
-    list.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
-    //completeItemList.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
-
+    // delete null values added to array caused by JSON
+    list = list.filter(function (value) { return value !== null; });
+    
     for (let index in list) {
         if (!list[index].isComplete) {
             displayItem("incomplete", list, index);
@@ -110,8 +118,6 @@ function displayToDoItems(list: ToDoItem[]): void {
             displayItem("complete", list, index);
         }
     }
-
-    
 }
 
 /**
@@ -140,7 +146,15 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     itemTitle.innerText = list[index].title;
 
     let itemDueDate = document.createElement("p");
-    itemDueDate.innerText = list[index].dueDate.toDateString();
+    /*
+    let dateString = list[index].dueDate.toString();
+    dateString = dateString.substring(0,15);
+    itemDueDate.innerText = dateString;
+    */
+    //itemDueDate.innerText = list[index].dueDate.toDateString();
+
+    let dueDate = new Date(list[index].dueDate.toString());
+    itemDueDate.innerText = dueDate.toDateString();
 
     let itemDetails = document.createElement("SPAN");
     itemDetails.classList.add("details");
@@ -212,16 +226,30 @@ function getToDoItem(): ToDoItem {
  */
 function addToDoItem(): void {
     addInputEventToClearErrMsg();
+
+    if (localStorage.length > 0) {
+        getLocalStorage();
+        // delete null values added to array caused by JSON
+        allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
+    }
+
     if (isValid()) {
         let item = getToDoItem();
         allToDoItemList.push(item);
         (<HTMLFormElement>getByID("todoForm")).reset();
     }
 
+    if (allToDoItemList.length > 1) {
+        // sort ToDoItems list by due date, most recent due date on top
+        allToDoItemList.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
+        //list.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
+    }
+
+
     // clear localStorage and set update list
     localStorage.clear();
     setLocalStorage(allToDoItemList);
-    
+
 }
 
 // clear ToDoItems

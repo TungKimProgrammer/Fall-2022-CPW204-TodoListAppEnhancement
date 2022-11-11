@@ -15,6 +15,7 @@ var ToDoItem = (function () {
 var allToDoItemList = [];
 window.onload = function () {
     var addBtn = getByID("addButton");
+    var retrieveBtn = getByID("retrieveButton");
     var clearBtn = getByID("clearButton");
     addBtn.addEventListener("click", clearErrMsg);
     addBtn.addEventListener("click", main);
@@ -32,7 +33,7 @@ function loadSavedTodoItemList() {
     displayToDoItems(allToDoItemList);
 }
 function setLocalStorage(list) {
-    for (var index in allToDoItemList) {
+    for (var index in list) {
         var itemString = JSON.stringify(list[index]);
         localStorage.setItem(index, itemString);
     }
@@ -40,8 +41,9 @@ function setLocalStorage(list) {
 function getLocalStorage() {
     allToDoItemList = [];
     for (var index in localStorage) {
-        var itemResult = localStorage.getItem(index);
-        allToDoItemList.push(JSON.parse(itemResult));
+        var itemFromLocalStorage = localStorage.getItem(index);
+        var itemToRetrieve = JSON.parse(itemFromLocalStorage);
+        allToDoItemList.push(itemToRetrieve);
     }
 }
 function itemToggle() {
@@ -49,10 +51,13 @@ function itemToggle() {
     var index = itemDiv.getAttribute("data-index");
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems(allToDoItemList);
+    localStorage.clear();
+    setLocalStorage(allToDoItemList);
+    allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
 }
 function displayToDoItems(list) {
     getByID("display-div").innerHTML = "";
-    list.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
+    list = list.filter(function (value) { return value !== null; });
     for (var index in list) {
         if (!list[index].isComplete) {
             displayItem("incomplete", list, index);
@@ -83,7 +88,8 @@ function displayItem(s, list, index) {
     }
     itemTitle.innerText = list[index].title;
     var itemDueDate = document.createElement("p");
-    itemDueDate.innerText = list[index].dueDate.toDateString();
+    var dueDate = new Date(list[index].dueDate.toString());
+    itemDueDate.innerText = dueDate.toDateString();
     var itemDetails = document.createElement("SPAN");
     itemDetails.classList.add("details");
     itemDetails.onclick = function () { modal.style.display = "block"; };
@@ -131,10 +137,17 @@ function getToDoItem() {
 }
 function addToDoItem() {
     addInputEventToClearErrMsg();
+    if (localStorage.length > 0) {
+        getLocalStorage();
+        allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
+    }
     if (isValid()) {
         var item = getToDoItem();
         allToDoItemList.push(item);
         getByID("todoForm").reset();
+    }
+    if (allToDoItemList.length > 1) {
+        allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
     }
     localStorage.clear();
     setLocalStorage(allToDoItemList);
