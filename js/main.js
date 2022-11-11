@@ -45,12 +45,21 @@ function getLocalStorage() {
         var itemToRetrieve = JSON.parse(itemFromLocalStorage);
         allToDoItemList.push(itemToRetrieve);
     }
+    allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
+    sortToDoItems();
+}
+function updateLocalStorage() {
+    localStorage.clear();
+    setLocalStorage(allToDoItemList);
+    getLocalStorage();
+    displayToDoItems(allToDoItemList);
 }
 function itemToggle() {
     var itemDiv = this;
     var index = itemDiv.getAttribute("data-index");
     allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
+    sortToDoItems();
     displayToDoItems(allToDoItemList);
     localStorage.clear();
     setLocalStorage(allToDoItemList);
@@ -70,14 +79,25 @@ function displayToDoItems(list) {
         }
     }
 }
+function deleteItem() {
+    var itemDeleteSpanX = this;
+    var index = itemDeleteSpanX.getAttribute("data-delete-index");
+    allToDoItemList.splice(parseInt(index), 1);
+    sortToDoItems();
+    updateLocalStorage();
+}
 function displayItem(s, list, index) {
     var displayDiv = getByID("display-div");
     var itemDiv = document.createElement("DIV");
     itemDiv.ondblclick = itemToggle;
-    itemDiv.setAttribute("id", "todo-" + s + "-" + index);
     itemDiv.setAttribute("data-index", index);
     itemDiv.setAttribute("data-status", s);
     itemDiv.classList.add("todo-" + s + "-" + index);
+    var itemDeleteSpanX = document.createElement("SPAN");
+    itemDeleteSpanX.classList.add("deleteX");
+    itemDeleteSpanX.setAttribute("data-delete-index", index);
+    itemDeleteSpanX.innerText = "X";
+    itemDeleteSpanX.onclick = deleteItem;
     var status = "";
     var itemTitle = document.createElement("h3");
     if (list[index].isComplete) {
@@ -96,6 +116,7 @@ function displayItem(s, list, index) {
     itemDetails.onclick = function () { modal.style.display = "block"; };
     itemDetails.innerText = "Details";
     displayDiv.appendChild(itemDiv);
+    itemDiv.appendChild(itemDeleteSpanX);
     itemDiv.appendChild(itemTitle);
     itemDiv.appendChild(itemDueDate);
     itemDiv.appendChild(itemDetails);
@@ -149,10 +170,12 @@ function addToDoItem() {
     }
     if (allToDoItemList.length > 1) {
         allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
-        allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
+        sortToDoItems();
     }
-    localStorage.clear();
-    setLocalStorage(allToDoItemList);
+    updateLocalStorage();
+}
+function sortToDoItems() {
+    allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
 }
 function clearLists() {
     allToDoItemList = [];

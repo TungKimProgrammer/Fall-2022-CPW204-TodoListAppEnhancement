@@ -145,6 +145,18 @@ p {
     border-radius: 2em;
 }
 
+/* The Delete X button */
+.deleteX {
+    display: block;
+    color: #aaaaaa;
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+    margin-left: 18px;
+    margin-top: 5px;
+    margin-right: 10px;
+}
+
 /* The Close Button */
 .close {
     color: #aaaaaa;
@@ -155,8 +167,10 @@ p {
 }
 
 .close:hover,
-.close:focus {
-    color: #000;
+.close:focus,
+.deleteX:hover,
+.deleteX:focus {
+    color: rgb(253, 0, 0);
     text-decoration: none;
     cursor: pointer;
 }
@@ -167,7 +181,7 @@ p {
     float: right;
     font-size: 18px;
     font-weight: bold;
-    padding-right: 10px;
+    padding-right: 15px;
     display: inline;
 }
 
@@ -181,7 +195,7 @@ p {
 p {
     margin-top: 0px;
     margin-bottom: 0px;
-    padding-left: 1em;
+    padding-left: 0em;
     padding-right: 1em;
 }
 

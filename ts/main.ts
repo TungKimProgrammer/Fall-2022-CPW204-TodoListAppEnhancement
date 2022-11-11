@@ -81,6 +81,18 @@ function getLocalStorage() {
         let itemToRetrieve: ToDoItem = JSON.parse(itemFromLocalStorage);
         allToDoItemList.push(itemToRetrieve);
     }
+    // delete null values added to array caused by JSON
+    allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
+    sortToDoItems();
+}
+
+// clear localStorage and set update list
+function updateLocalStorage() {
+    // clear localStorage and set update list
+    localStorage.clear();
+    setLocalStorage(allToDoItemList);
+    getLocalStorage();
+    displayToDoItems(allToDoItemList);
 }
 
 // Allows user to double click on each item
@@ -95,6 +107,9 @@ function itemToggle(): void {
 
     // toggle status
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
+
+    sortToDoItems();
+
     displayToDoItems(allToDoItemList);
     
     // clear and update localStorage after toggling
@@ -125,6 +140,15 @@ function displayToDoItems(list: ToDoItem[]): void {
     }
 }
 
+function deleteItem() {
+    var itemDeleteSpanX = <HTMLElement>this;
+    let index = itemDeleteSpanX.getAttribute("data-delete-index");
+    allToDoItemList.splice(parseInt(index), 1);
+    sortToDoItems();
+    updateLocalStorage();
+
+}
+
 /**
  * 
  * @param s "complete" or "incomplete"
@@ -133,14 +157,20 @@ function displayToDoItems(list: ToDoItem[]): void {
  */
 function displayItem(s: string, list: ToDoItem[], index: string) {
     let displayDiv = getByID("display-div");
-
+    
     // create div to display each item
     let itemDiv = document.createElement("DIV");
     itemDiv.ondblclick = itemToggle;
-    itemDiv.setAttribute("id", "todo-" + s + "-" + index);
     itemDiv.setAttribute("data-index", index);
     itemDiv.setAttribute("data-status", s);
     itemDiv.classList.add("todo-" + s + "-" + index);
+
+    // create X to delete item
+    let itemDeleteSpanX = document.createElement("SPAN");
+    itemDeleteSpanX.classList.add("deleteX");
+    itemDeleteSpanX.setAttribute("data-delete-index", index);
+    itemDeleteSpanX.innerText = "X";
+    itemDeleteSpanX.onclick = deleteItem;
 
     let status = "";
     let itemTitle = document.createElement("h3");
@@ -151,13 +181,6 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     itemTitle.innerText = list[index].title;
 
     let itemDueDate = document.createElement("p");
-    /*
-    let dateString = list[index].dueDate.toString();
-    dateString = dateString.substring(0,15);
-    itemDueDate.innerText = dateString;
-    */
-    //itemDueDate.innerText = list[index].dueDate.toDateString();
-
     let dueDate = new Date(list[index].dueDate.toString());
     itemDueDate.innerText = dueDate.toDateString();
 
@@ -167,6 +190,7 @@ function displayItem(s: string, list: ToDoItem[], index: string) {
     itemDetails.innerText = "Details";
 
     displayDiv.appendChild(itemDiv);
+    itemDiv.appendChild(itemDeleteSpanX);
     itemDiv.appendChild(itemTitle);
     itemDiv.appendChild(itemDueDate);
     itemDiv.appendChild(itemDetails);
@@ -234,6 +258,7 @@ function addToDoItem(): void {
 
     if (localStorage.length > 0) {
         getLocalStorage();
+        // delete null values added to array caused by JSON
         allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
     }
 
@@ -247,16 +272,17 @@ function addToDoItem(): void {
         // delete null values added to array caused by JSON
         allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
         
-        // sort ToDoItems list by due date, most recent due date on top
-        allToDoItemList.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
-        //list.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
+        sortToDoItems();
     }
 
+    updateLocalStorage();
+}
 
-    // clear localStorage and set update list
-    localStorage.clear();
-    setLocalStorage(allToDoItemList);
-
+// sort ToDoItems list by due date, most recent due date on top
+function sortToDoItems() {
+    // sort ToDoItems list by due date, most recent due date on top
+    allToDoItemList.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
+    //list.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
 }
 
 // clear ToDoItems
