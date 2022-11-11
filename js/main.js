@@ -49,6 +49,7 @@ function getLocalStorage() {
 function itemToggle() {
     var itemDiv = this;
     var index = itemDiv.getAttribute("data-index");
+    allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems(allToDoItemList);
     localStorage.clear();
@@ -147,6 +148,7 @@ function addToDoItem() {
         getByID("todoForm").reset();
     }
     if (allToDoItemList.length > 1) {
+        allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
         allToDoItemList.sort(function (a, b) { return (a.dueDate >= b.dueDate) ? 1 : -1; });
     }
     localStorage.clear();

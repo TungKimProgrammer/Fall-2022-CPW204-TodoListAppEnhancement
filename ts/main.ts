@@ -90,12 +90,17 @@ function itemToggle(): void {
     var itemDiv = <HTMLElement>this;
     let index = itemDiv.getAttribute("data-index");
 
+    // delete null values added to array caused by JSON
+    allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
+
+    // toggle status
     allToDoItemList[index].isComplete = !allToDoItemList[index].isComplete;
     displayToDoItems(allToDoItemList);
     
     // clear and update localStorage after toggling
     localStorage.clear();
     setLocalStorage(allToDoItemList);
+
     // delete null values added to array caused by JSON
     allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
 }
@@ -229,7 +234,6 @@ function addToDoItem(): void {
 
     if (localStorage.length > 0) {
         getLocalStorage();
-        // delete null values added to array caused by JSON
         allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
     }
 
@@ -240,6 +244,9 @@ function addToDoItem(): void {
     }
 
     if (allToDoItemList.length > 1) {
+        // delete null values added to array caused by JSON
+        allToDoItemList = allToDoItemList.filter(function (value) { return value !== null; });
+        
         // sort ToDoItems list by due date, most recent due date on top
         allToDoItemList.sort((a, b) => (a.dueDate >= b.dueDate) ? 1 : -1);
         //list.sort((a,b) => (a.dueDate > b.dueDate) ? 1 : ((b.dueDate > a.dueDate) ? -1 : 0));
